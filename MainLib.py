@@ -34,6 +34,7 @@ class FileWatcher:
 ##############################################################################################
 class Handler(FileSystemEventHandler):
     log = logging.getLogger("Handler")
+    WaitTime = 5
     @staticmethod
 
     def on_any_event(event):
@@ -41,11 +42,9 @@ class Handler(FileSystemEventHandler):
             return None
         elif event.event_type == 'created':
             Handler.log.info("Created file - "+event.src_path)
+            time.sleep(Handler.WaitTime)
+            os.startfile(event.src_path)
         elif event.event_type == 'modified':
             Handler.log.info("Modified file - "+event.src_path)
 ##############################################################################################
 
-if __name__ == '__main__':
-    logging.debug("root Start")
-    FileWatcher.WatchDirectory = Config.ConfigRead('FileWatcher','WatchedDirectory','str')
-    FileWatcher().run()
