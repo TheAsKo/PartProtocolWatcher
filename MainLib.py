@@ -7,6 +7,9 @@ import time
 import logging
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import subprocess
+from tkinter import *
+from tkinter import messagebox
 ##############################################################################################
 # Declarations
 logging.getLogger().setLevel(logging.DEBUG)
@@ -43,8 +46,24 @@ class Handler(FileSystemEventHandler):
         elif event.event_type == 'created':
             Handler.log.info("Created file - "+event.src_path)
             time.sleep(Handler.WaitTime)
-            os.startfile(event.src_path)
         elif event.event_type == 'modified':
             Handler.log.info("Modified file - "+event.src_path)
+            subprocess.Popen(r'explorer "'+event.src_path+'"')
+            FileProgress(event.src_path)
 ##############################################################################################
+def FileOpen(filepath,alt=1):
+    filepath = filepath.replace('/','\"')
+    match alt:
+        case 0 : os.startfile(filepath)
+        case 1 : subprocess.Popen(r'explorer "'+filepath+'"')
+##############################################################################################
+def FileProgress(filepath,setting = 0):
+    logging.debug("23")
+    value = messagebox.askquestion('ProtocolWatcher','Bol najdeny novy prokotol: \n'+str(filepath)+'\n Chcete ho otvorit?')
+    match setting:
+        case 0 : 
+            if value == 'yes' :
+                subprocess.Popen(r'explorer "'+filepath.replace('/','\"')+'"')
+        case _ : pass
+
 

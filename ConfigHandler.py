@@ -1,6 +1,11 @@
 # Config File - Default Create + Reading + Writing
+# V1.1
 ###############################################
-#Imports
+# Changelog
+# V1.0 - Initial commit
+# V1.1 - Fixing error message handling of values
+###############################################
+# Imports
 import configparser
 import logging
 import json
@@ -13,7 +18,11 @@ configparser.BasicInterpolation() #NOT WORKING NEED TO FIX FOR ADDING %
 logging.getLogger().setLevel(logging.DEBUG) #I THINK CUSTOM LOG NAME DONT WORK HERE TOO EVEN IT IS IN SEPARATE DEFS
 ###############################################
 def DefaultConfigWrite(): #AUTO RECOVERY DOESNT WORK BCS LIB LOADS FASTER THAN I CAN REFRESH FILE I THINK , MAYBE I CAN MOVE ALL VARS OUT OF LIBS
-    config['FileWatcher'] = {'WatchedDirectory' : ''}
+    config['FileWatcher'] = {'WatchedDirectory' : '',
+                             'DM1Directory' : 'U:/13376\Crysta Apex V\Protokolle\9846400_E1A-04',
+                             'DM2Directory' : 'U:/13376\Crysta Apex V\Protokolle\9846401_E1A-04',
+                             'EMDirectory'  : 'U:/13114\Protokolle\9846402',
+                             'TestDirectory': 'C:/Users/NSZnasta/Desktop/ProjectFolder/Test'}
     #config['MAIN'] = {'OnlyRootDebug':'True',
     #                'tess_cmd':'C:/Users/nsz.fu.montaz/AppData/Local/Tesseract-OCR/tesseract.exe',
     #                'tessdefault_config':'--psm 7 --oem 3',
@@ -43,27 +52,27 @@ def ConfigRead(value1,value2,Type=None):
                 try : 
                     return json.loads(ValueX[value2])
                 except:
-                    log.warning("Requested value "+value2+" failed to load as dictionary/list!")
+                    log.warning("Requested value "+str(value2)+" failed to load as dictionary/list!")
             case 'int' : 
                 try:
                     return ValueX.getint(value2)
                 except:
-                    log.warning("Requested value "+value2+" is not integer!")
+                    log.warning("Requested value "+str(value2)+" is not integer!")
             case 'float' : 
                 try:
                     return ValueX.getfloat(value2)
                 except:
-                    log.warning("Requested value "+value2+" is not float!")
+                    log.warning("Requested value "+str(value2)+" is not float!")
             case 'bool' : 
                 try:
                     return ValueX.getboolean(value2)
                 except:
-                    log.warning("Requested value "+value2+" is not bool!")
+                    log.warning("Requested value "+str(value2)+" is not bool!")
             case _ : 
                 try:
                     return ValueX[value2]
                 except:
-                    log.warning("Requested value "+value2+" failed to load!")
+                    log.warning("Requested value "+str(value2)+" failed to load!")
     else :
         log.critical('Missing config file , recovering default one after 10 sec...')
         time.sleep(10)
@@ -79,9 +88,9 @@ def ConfigWrite(data1,data2,value,Type=None):
                 try :
                     config[data1][data2]=str(value)
                 except:
-                    log.warning('Updating value of '+data2+' failed!')
+                    log.warning('Updating value of '+str(data2)+' failed!')
                 else:
-                    log.debug('Edited value of '+data2+' to: '+value)
+                    log.debug('Edited value of '+str(data2)+' to: '+str(value))
         with open('config.ini', 'w') as configfile:
             config.write(configfile)
     else :
