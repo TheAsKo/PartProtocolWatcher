@@ -1,12 +1,18 @@
+# UI
+##############################################################################################
+# Imports
 import MainLib as Lib
 import logging
 import ConfigHandler as Config
 from tkinter import *
 from tkinter import ttk
-
+##############################################################################################
+# Declarations
+logging.getLogger().setLevel(logging.DEBUG)
 root = Tk()
 root.title("Protocol Watcher")
-
+##############################################################################################
+# Classes and Definitions
 def center(win):
     """
     centers a tkinter window
@@ -23,7 +29,7 @@ def center(win):
     y = win.winfo_screenheight() // 2 - win_height // 2
     win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     win.deiconify()
-
+##############################################################################################
 def ButtonPress(arg):
     logging.debug("Assigning ID: "+str(arg))
     match arg:
@@ -34,9 +40,10 @@ def ButtonPress(arg):
         case 0 : pass #NEED TO FINISH AUTODETECT FUNC
         case _ : logging.critical("Failed passing command from UI")
     Lib.FileWatcher.WatchDirectory = Config.ConfigRead('FileWatcher','WatchedDirectory','str')
+    root.lift()
     root.destroy()
     Lib.FileWatcher().run()
-    
+##############################################################################################    
 
     
 
